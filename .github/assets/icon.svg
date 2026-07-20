@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PrusaSlicer container icon">
+  <defs>
+    <linearGradient id="layers" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#0d9488"/>
+      <stop offset="0.55" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#99f6e4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Solid Carbon tile (CA icon: solid background) -->
+  <rect x="0" y="0" width="512" height="512" rx="96" fill="#161616"/>
+
+  <!-- A sliced 3D-printed frustum: horizontal layers, widest at the plate,
+       narrowing to the top. Reads universally as "3D-printing slicer" with no
+       brand marks. Each bar is one slice; a thin gap between them = layer lines. -->
+  <g fill="url(#layers)">
+    <rect x="150" y="150" width="212" height="26" rx="8"/>
+    <rect x="158" y="184" width="196" height="26" rx="8"/>
+    <rect x="166" y="218" width="180" height="26" rx="8"/>
+    <rect x="174" y="252" width="164" height="26" rx="8"/>
+    <rect x="182" y="286" width="148" height="26" rx="8"/>
+    <rect x="190" y="320" width="132" height="26" rx="8"/>
+  </g>
+
+  <!-- Brightest top slice = the layer currently being deposited -->
+  <rect x="142" y="116" width="228" height="26" rx="8" fill="#ccfbf1"/>
+
+  <!-- Build plate -->
+  <rect x="118" y="366" width="276" height="16" rx="8" fill="#3f3f46"/>
+  <rect x="118" y="384" width="276" height="6" rx="3" fill="#27272a"/>
+</svg>

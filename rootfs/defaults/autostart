@@ -1,0 +1,31 @@
+#!/bin/sh
+# -----------------------------------------------------------------------------
+# PrusaSlicer autostart for linuxserver/baseimage-selkies
+# -----------------------------------------------------------------------------
+# NOTE POSIX: openbox runs this with /bin/sh (dash) and ignores the shebang, so
+# no bashisms here ([[ ]], arrays, ...) — dash silently skips them.
+#
+# Single-app session: PrusaSlicer is launched as the session's main window. It
+# opens maximised (the base's openbox maximises the top-level window, which is
+# exactly what you want for the full 3D plate). When the window is closed the
+# session ends and the base restarts it, so closing simply reopens a fresh
+# PrusaSlicer — the kiosk model used by the other Selkies app containers.
+# -----------------------------------------------------------------------------
+
+# Pin the XDG dirs to the persistent /config tree for EVERY PUID (under PUID=0
+# the session runs as literal root, whose default HOME differs from abc's), so
+# PrusaSlicer's profiles/config always land where they are read back.
+export XDG_CONFIG_HOME="/config/.config"
+export XDG_DATA_HOME="/config/.local/share"
+export XDG_CACHE_HOME="/config/.cache"
+
+# GTK chrome/dialogs follow the house dark look; PrusaSlicer's own Dark mode
+# (Preferences -> General -> Dark mode) styles the app itself independently.
+export GTK_THEME="${GTK_THEME:-Adwaita-dark}"
+
+echo "[prusaslicer-autostart] launching PrusaSlicer (XDG_CONFIG_HOME=$XDG_CONFIG_HOME, GTK_THEME=$GTK_THEME)" >&2
+
+# dbus-launch gives the GTK app a session bus (avoids the noisy dbus warnings
+# and lets file-chooser portals work). --exit-with-session ties the bus to the
+# app lifetime.
+exec dbus-launch --exit-with-session /usr/bin/prusa-slicer

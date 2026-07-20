@@ -1,0 +1,31 @@
+NOTICE — Bundled Software in the PrusaSlicer Unraid Container Image
+==================================================================
+
+The MIT License (see LICENSE) covers ONLY the wrapper assets in this
+repository:
+  * Dockerfile and rootfs/ overlay
+  * Helper scripts under rootfs/usr/local/bin/
+  * Unraid container template (maintained in the junkerderprovinz/unraid-apps repo)
+  * README, banner and icon artwork
+
+It does NOT relicense any software shipped inside the resulting container
+image. Each bundled component retains its upstream license:
+
+  * PrusaSlicer                  AGPL-3.0-or-later
+                                 https://github.com/prusa3d/PrusaSlicer
+                                 (installed from the Debian `prusa-slicer` package)
+  * LinuxServer.io baseimage-selkies
+                                 GPL-3.0
+                                 https://github.com/linuxserver/docker-baseimage-selkies
+  * Mesa, GLU                    MIT / SGI-B-2.0
+  * GTK, wxWidgets               LGPL-2.1+ / wxWindows Library Licence
+  * Adwaita / gnome-themes-extra, fonts (Noto, DejaVu, Liberation)
+                                 various open licenses (OFL, GPL, LGPL, Apache)
+
+This project is not affiliated with or endorsed by Prusa Research. "PrusaSlicer"
+is a name of software published by Prusa Research; it is used here only to name
+the application this image packages.
+
+When you run, redistribute or rebuild the resulting container image, you must
+comply with the licenses of all bundled components in addition to the MIT
+license that covers this repository.
