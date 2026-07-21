@@ -245,8 +245,13 @@ jobs:
         run: |
           if [ -n "$PW" ]; then echo "go=true" >> "$GITHUB_OUTPUT"; else echo "DOCKERHUB_PASSWORD not set — skipping Docker Hub description sync"; echo "go=false" >> "$GITHUB_OUTPUT"; fi
 
+      # Cosmetic: syncs the GitHub README to the Docker Hub repo description.
+      # continue-on-error so a bad/expired DOCKERHUB_PASSWORD (401 at login — the
+      # description API needs the account password or an edit-scoped PAT, not the
+      # push token) never reds a build whose images already pushed fine.
       - name: Sync README to Docker Hub
         if: ${{ steps.dhdesc.outputs.go == 'true' }}
+        continue-on-error: true
         uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
