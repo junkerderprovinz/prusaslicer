@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/prusaslicer-banner.png" alt="PrusaSlicer" width="100%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/prusaslicer-banner-dark.png">
+    <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/prusaslicer-banner.png" alt="PrusaSlicer — have your model and slice it too" width="100%">
+  </picture>
 </p>
 
 <p align="center">
@@ -148,6 +151,15 @@ tested (the binary is present **and** the WebUI answers) before publishing, and 
 
 See [`NOTICE`](NOTICE) for the full bundled-software license list. This repository's own wrapper
 (Dockerfile, rootfs, scripts, artwork) is MIT — see [`LICENSE`](LICENSE).
+
+<br>
+
+<p align="center">
+  If this saved you a slicer setup, consider buying me a coffee:<br><br>
+  <a href="https://buymeacoffee.com/junkerderprovinz">
+    <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/button-buy-me-a-coffee.svg" alt="Buy me a coffee" width="220">
+  </a>
+</p>
 
 ---
 
