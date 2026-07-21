@@ -35,12 +35,13 @@ containers feel laggy.
 ## Table of Contents
 
 1. [What is this?](#1-what-is-this)
-2. [Why Selkies?](#2-why-selkies)
-3. [Install on Unraid](#3-install-on-unraid)
-4. [Configuration](#4-configuration)
-5. [First use](#5-first-use)
-6. [How it works](#6-how-it-works)
-7. [Credits](#7-credits)
+2. [Screenshots](#2-screenshots)
+3. [Why Selkies?](#3-why-selkies)
+4. [Install on Unraid](#4-install-on-unraid)
+5. [Configuration](#5-configuration)
+6. [First use](#6-first-use)
+7. [How it works](#7-how-it-works)
+8. [Credits](#8-credits)
 
 <br>
 
@@ -62,7 +63,23 @@ both architectures.
 
 <br>
 
-## 2. Why Selkies?
+## 2. Screenshots
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/screenshots/plater-model.png" alt="PrusaSlicer plater — a model on the 3D build plate, streamed to the browser" width="90%">
+  <br><em>The plater — place and arrange models on the 3D build plate, right in your browser over Selkies.</em>
+</p>
+
+<br>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/screenshots/preview.png" alt="PrusaSlicer sliced preview — colour-coded toolpaths, per-feature breakdown and print-time estimate" width="90%">
+  <br><em>Sliced preview — colour-coded toolpaths, a per-feature breakdown and the print-time / filament estimate, then export the G-code.</em>
+</p>
+
+<br>
+
+## 3. Why Selkies?
 
 Slicing is a 3D-viewport workflow: you rotate the plate, zoom into overhangs, drag and orient
 models, and scrub the layer/tool-path preview. Over the older **noVNC** stack that continuous
@@ -73,7 +90,7 @@ falls back to software rendering so it still works.
 
 <br>
 
-## 3. Install on Unraid
+## 4. Install on Unraid
 
 Requires **Unraid 6.12+**. Install via **Community Applications** — search for **PrusaSlicer**
 (look for the `junkerderprovinz` maintainer). Or add the template repository manually under
@@ -87,7 +104,7 @@ Then open the WebUI on the mapped **HTTPS** port (default `3001`).
 
 <br>
 
-## 4. Configuration
+## 5. Configuration
 
 | Variable | Required | Description |
 |---|---|---|
@@ -97,8 +114,8 @@ Then open the WebUI on the mapped **HTTPS** port (default `3001`).
 | `PUID` / `PGID` | No | User/group the app runs as, so files it writes match your share ownership. The Unraid template sets `99`/`100` (nobody/users). |
 | `TZ` | No | Timezone (e.g. `Europe/Berlin`). |
 
-Mount your models/projects folder to a path inside the container (e.g. `/config/projects` or a
-dedicated `/models` mapping) so slices and G-code land on your array. PrusaSlicer's own
+Mount your models/G-code folder to **`/storage`** (the Unraid template defaults it to `/mnt/user`,
+giving access to all shares) so imports and slices land on your array. PrusaSlicer's own
 configuration (printer/filament/print profiles) persists under **`/config`**.
 
 > [!NOTE]
@@ -108,7 +125,7 @@ configuration (printer/filament/print profiles) persists under **`/config`**.
 
 <br>
 
-## 5. First use
+## 6. First use
 
 1. Open the WebUI — PrusaSlicer starts maximised, ready to slice.
 2. Run the **Configuration Assistant** (first launch) and pick your printer(s) and filament(s).
@@ -122,7 +139,7 @@ app (kiosk model), so there is nothing else to manage.
 
 <br>
 
-## 6. How it works
+## 7. How it works
 
 ```
 Browser ──WebRTC (Selkies)──> PrusaSlicer container
@@ -140,7 +157,7 @@ tested (the binary is present **and** the WebUI answers) before publishing, and 
 
 <br>
 
-## 7. Credits
+## 8. Credits
 
 - **[PrusaSlicer](https://github.com/prusa3d/PrusaSlicer)** by Prusa Research (AGPL-3.0) — the
   slicer this image packages. Installed from the Debian `prusa-slicer` package. This project is
