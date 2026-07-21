@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!--
+  Unraid Community Applications support thread for PrusaSlicer.
+  Structure mirrors the sister-app threads (Krusader, featherdrop):
+  title -> subtitle -> banner -> buttons -> What is this? -> Highlights ->
+  Requirements -> Posting a bug report -> Credits -> disclaimer.
+  Open standalone in a browser, or paste into the Unraid forum editor's source.
+  Title: [Support] junkerderprovinz - PrusaSlicer
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[Support] junkerderprovinz - PrusaSlicer</title>
+<style>
+  body { max-width: 900px; margin: 1.5rem auto; padding: 0 1rem;
+         font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         line-height: 1.6; color: #1c1c1c; }
+  h1 { text-align: center; font-size: 1.7rem; margin-bottom: .2rem; }
+  .subtitle { text-align: center; color: #666; font-style: italic; margin-top: 0; }
+  h2 { margin-top: 1.9rem; font-size: 1.25rem; }
+  code { background: #f1f1f1; padding: .1em .35em; border-radius: 4px; font-size: .9em; }
+  a { color: #ed6b21; }
+  ul { padding-left: 1.2rem; }
+  li { margin: .25rem 0; }
+  img { border: 0; vertical-align: middle; }
+  hr { border: 0; border-top: 1px solid #ddd; margin: 2rem 0; }
+  .footnote { color: #777; font-size: .9em; font-style: italic; text-align: center; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<h1>PrusaSlicer – the 3D-printing slicer, in your browser, for Unraid</h1>
+<p class="subtitle">Have your model and slice it too — no VNC client, no local install.</p>
+
+<p align="center">
+  <a href="https://github.com/junkerderprovinz/prusaslicer">
+    <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/prusaslicer-banner-logo.png" alt="PrusaSlicer" width="100%">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://unraid.net/community/apps?q=prusaslicer"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/support-buttons/install-on-unraid.svg" alt="Install on Unraid" width="240"></a>
+  &nbsp;
+  <a href="https://github.com/junkerderprovinz/prusaslicer"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/support-buttons/view-on-github.svg" alt="View on GitHub" width="240"></a>
+  &nbsp;
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/support-buttons/buy-me-a-coffee.svg" alt="Buy me a coffee" width="240"></a>
+</p>
+
+<h2>What is this?</h2>
+<p>The full <strong>PrusaSlicer</strong> desktop app — the FDM/SLA slicer from Prusa Research —
+running in one container and streamed to your browser over
+<a href="https://github.com/selkies-project/selkies">Selkies</a> (WebRTC). Open the WebUI and
+slice: no X client, no VNC viewer, nothing to install on your workstation. The WebRTC stream
+keeps the 3D plate smooth to rotate, zoom and drag — the part of slicing where the older noVNC
+containers feel laggy.</p>
+<p>LinuxServer ship OrcaSlicer and Cura on Selkies but <strong>no PrusaSlicer</strong>, and the
+only other browser-based PrusaSlicer images are years-old, abandoned noVNC builds. This is a
+maintained, modern Selkies build for <strong>amd64 and arm64</strong>.</p>
+
+<h2>Highlights</h2>
+<ul>
+  <li><strong>The real PrusaSlicer desktop</strong>, streamed over WebRTC (Selkies) — smooth 3D plate, native Prusa printer/filament profiles</li>
+  <li>Installed from Debian trixie's <code>prusa-slicer</code> package (PrusaSlicer no longer ships a Linux AppImage), so it tracks Debian security updates</li>
+  <li><strong>No login by default</strong> for trusted-LAN use — set a WebUI username + password to enable HTTP basic auth</li>
+  <li><strong>Dark by default</strong> — dark GTK chrome; PrusaSlicer's own Dark mode is under Preferences → General</li>
+  <li>Profiles &amp; configuration persist under <code>/config</code>; your models and G-code live under <code>/storage</code></li>
+  <li>GPU-accelerated when a GPU is passed through, software rendering otherwise (works either way)</li>
+  <li>Multi-arch — amd64 + arm64</li>
+  <li>Image: <code>junkerderprovinz/prusaslicer:latest</code> (Docker Hub / GHCR)</li>
+</ul>
+
+<h2>Requirements</h2>
+<ul>
+  <li>Unraid 6.12+</li>
+  <li>Open the WebUI over <strong>HTTPS on port 3001</strong> (self-signed cert — accept it once). Port 3000 (HTTP) is for a reverse proxy that terminates TLS, not direct browser access</li>
+  <li>Mount your models / G-code folder to <code>/storage</code> (defaults to <code>/mnt/user</code>) so imports and slices land on your array</li>
+  <li>For the smoothest 3D viewport, pass through a GPU; without one it falls back to software rendering, which still works</li>
+</ul>
+
+<h2>Posting a bug report</h2>
+<p>Please post:</p>
+<ul>
+  <li>Unraid version (Settings → System Information)</li>
+  <li>Image tag (<code>latest</code> or a pinned <code>vX.Y.Z</code>)</li>
+  <li>Output of <code>docker logs --tail 200 PrusaSlicer</code></li>
+  <li>Browser + OS you're using</li>
+  <li>Whether you changed the ports, the <code>/config</code> / <code>/storage</code> mounts, or set a WebUI username/password</li>
+</ul>
+<p>GitHub issues with the same info are also welcome:
+<a href="https://github.com/junkerderprovinz/prusaslicer/issues">github.com/junkerderprovinz/prusaslicer/issues</a></p>
+
+<h2>Credits</h2>
+<p>Packages <a href="https://github.com/prusa3d/PrusaSlicer">PrusaSlicer</a> by Prusa Research
+(AGPL-3.0) on <a href="https://github.com/linuxserver/docker-baseimage-selkies">LinuxServer.io's
+baseimage-selkies</a>, streamed with <a href="https://github.com/selkies-project/selkies">Selkies</a>.
+Not affiliated with or endorsed by Prusa Research. If this saves you a slicer setup, you can
+<a href="https://buymeacoffee.com/junkerderprovinz">buy me a coffee</a>.</p>
+
+<hr>
+
+<p class="footnote">Self-hosted, MIT-licensed wrapper — you run it, you own your data and the responsibility.</p>
+
+</body>
+</html>
