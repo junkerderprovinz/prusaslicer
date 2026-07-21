@@ -94,7 +94,7 @@ Then open the WebUI on the mapped **HTTPS** port (default `3001`).
 | `CUSTOM_USER` | No | WebUI login user. Leave empty (with `PASSWORD`) for **no login** on a trusted LAN. |
 | `PASSWORD` | No | WebUI login password. Empty = no login; set both to enable HTTP basic auth on the WebUI. |
 | `CUSTOM_HTTPS_PORT` | No | HTTPS port the WebUI is served on (default `3001`). |
-| `PUID` / `PGID` | No | User/group the app runs as, so files it writes match your share ownership (default `1000`/`1000`). |
+| `PUID` / `PGID` | No | User/group the app runs as, so files it writes match your share ownership. The Unraid template sets `99`/`100` (nobody/users). |
 | `TZ` | No | Timezone (e.g. `Europe/Berlin`). |
 
 Mount your models/projects folder to a path inside the container (e.g. `/config/projects` or a
