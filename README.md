@@ -13,7 +13,7 @@
   <a href="https://github.com/junkerderprovinz/prusaslicer/pkgs/container/prusaslicer"><img src="https://img.shields.io/badge/Arch-amd64%20%7C%20arm64-success?style=for-the-badge&logo=linux&logoColor=white" alt="Arch" height="36"></a>&nbsp;
   <a href="https://github.com/prusa3d/PrusaSlicer"><img src="https://img.shields.io/badge/Engine-PrusaSlicer-0d9488?style=for-the-badge&logoColor=white" alt="PrusaSlicer" height="36"></a>&nbsp;
   <a href="https://unraid.net"><img src="https://img.shields.io/badge/Unraid-Template-f15a2c?style=for-the-badge&logo=unraid&logoColor=white" alt="Unraid" height="36"></a>&nbsp;
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="License" height="36"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue?style=for-the-badge&logo=gnu&logoColor=white" alt="License: AGPL-3.0" height="36"></a>
 </p>
 
 <p align="center">
@@ -42,6 +42,7 @@ containers feel laggy.
 6. [First use](#6-first-use)
 7. [How it works](#7-how-it-works)
 8. [Credits](#8-credits)
+9. [License](#9-license)
 
 <br>
 
@@ -167,7 +168,7 @@ tested (the binary is present **and** the WebUI answers) before publishing, and 
 - **[Selkies](https://github.com/selkies-project/selkies)** — the WebRTC desktop streaming stack.
 
 See [`NOTICE`](NOTICE) for the full bundled-software license list. This repository's own wrapper
-(Dockerfile, rootfs, scripts, artwork) is MIT — see [`LICENSE`](LICENSE).
+(Dockerfile, rootfs, scripts, artwork) is AGPL-3.0; see [`LICENSE`](LICENSE).
 
 <br>
 
@@ -177,3 +178,13 @@ See [`NOTICE`](NOTICE) for the full bundled-software license list. This reposito
     <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/button-buy-me-a-coffee.svg" alt="Buy me a coffee" width="220">
   </a>
 </p>
+
+<br>
+
+## 9. License
+
+**Copyright (C) 2026 Junker der Provinz.**
+
+This repository packages PrusaSlicer as a container for Unraid. The packaging in this repository (Dockerfile, scripts, theme, web assets and everything else original here) is free software under the **GNU Affero General Public License v3.0** (AGPL-3.0); see [LICENSE](LICENSE). If you distribute it, or run a modified version as a network service, you must release your source under the same AGPL-3.0 terms and keep the existing copyright and attribution notices intact.
+
+**Scope.** The AGPL applies to this repository's own code and assets. PrusaSlicer itself is a separate project under its own license and name; this repository does not claim it. The banner, logo, theme and other branding original to this repository remain reserved: a fork must use its own branding and may not present itself as this project.
