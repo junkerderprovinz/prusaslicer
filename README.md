@@ -172,15 +172,6 @@ See [`NOTICE`](NOTICE) for the full bundled-software license list. This reposito
 
 <br>
 
-<p align="center">
-  If this saved you a slicer setup, consider buying me a coffee:<br><br>
-  <a href="https://buymeacoffee.com/junkerderprovinz">
-    <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/button-buy-me-a-coffee.svg" alt="Buy me a coffee" width="220">
-  </a>
-</p>
-
-<br>
-
 ## 9. License
 
 **Copyright (C) 2026 Junker der Provinz.**
@@ -188,3 +179,12 @@ See [`NOTICE`](NOTICE) for the full bundled-software license list. This reposito
 This repository packages PrusaSlicer as a container for Unraid. The packaging in this repository (Dockerfile, scripts, theme, web assets and everything else original here) is free software under the **GNU Affero General Public License v3.0** (AGPL-3.0); see [LICENSE](LICENSE). If you distribute it, or run a modified version as a network service, you must release your source under the same AGPL-3.0 terms and keep the existing copyright and attribution notices intact.
 
 **Scope.** The AGPL applies to this repository's own code and assets. PrusaSlicer itself is a separate project under its own license and name; this repository does not claim it. The banner, logo, theme and other branding original to this repository remain reserved: a fork must use its own branding and may not present itself as this project.
+
+<br>
+
+<p align="center">
+  If this saved you a slicer setup, consider buying me a coffee:<br><br>
+  <a href="https://buymeacoffee.com/junkerderprovinz">
+    <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/button-buy-me-a-coffee.svg" alt="Buy me a coffee" width="220">
+  </a>
+</p>
