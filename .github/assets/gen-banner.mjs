@@ -36,7 +36,7 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 const NAME = "PrusaSlicer";
 const CLAIM = "Have your model and slice it too.";
 const W = 1600, H = 500;
-const LH = 300;                     // mark height (house standard) - square viewBox
+const LH = 563;                     // mark height (house standard) - square viewBox
 const startX = 165;                 // left-anchor (house standard)
 const gap = 70;                     // mark-to-wordmark gap
 let nameSize = 132;                 // auto-fit down if the wordmark is too wide
@@ -100,12 +100,20 @@ const nameD = glyphD(archivo, NAME, textX, nameBaseline, nameSize);
 const claimD = glyphD(lato, CLAIM, textX, claimBaseline, claimSize);
 const paths = (ds, fill) => ds.map((d) => `<path d="${d}" fill="${fill}"/>`).join("");
 
-const LY = (H - LH) / 2;
+// Left-anchor by the VISIBLE ink (the two "S" halves), not the box: the S sits inset
+// inside its 800x800 circle viewBox, so anchoring the box at x=165 would leave a big
+// left gap. Measure the halves' ink bbox and offset so the ink's left edge -> 165 and
+// its vertical centre -> H/2.
+const halves = iconInner.replace(/<circle[^>]*\/>\s*/, "");
+const inkBB = new Resvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">${halves}</svg>`, { fitTo: { mode: "original" } }).innerBBox();
+const k = LH / 800;
+const markX = startX - inkBB.x * k;
+const markY = H / 2 - (inkBB.y + inkBB.height / 2) * k;
 for (const t of THEMES) {
   let inner = iconInner;
   if (!t.circle) inner = inner.replace(/<circle[^>]*\/>\s*/, "");     // drop the white backing disc
   inner = inner.replace(/#363636/gi, t.markGrey);                     // lighten the grey half on dark
-  const mark = `<svg x="${startX}" y="${LY}" width="${LH}" height="${LH}" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+  const mark = `<svg x="${markX.toFixed(2)}" y="${markY.toFixed(2)}" width="${LH}" height="${LH}" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${NAME}">
   <rect width="${W}" height="${H}" fill="${t.bg}"/>
