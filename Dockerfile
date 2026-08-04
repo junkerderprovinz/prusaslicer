@@ -23,7 +23,7 @@ LABEL maintainer="junkerderprovinz"
 LABEL org.opencontainers.image.title="prusaslicer"
 LABEL org.opencontainers.image.description="PrusaSlicer for Unraid with a Selkies web desktop — the 3D-printing slicer in your browser, no VNC client"
 LABEL org.opencontainers.image.source="https://github.com/junkerderprovinz/prusaslicer"
-LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.licenses="AGPL-3.0-only"
 LABEL org.opencontainers.image.vendor="junkerderprovinz"
 
 # TITLE feeds the PWA manifest; SELKIES_UI_TITLE is the visible tab/sidebar
