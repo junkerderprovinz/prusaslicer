@@ -48,14 +48,26 @@ const THEMES = [
 // ---------------------------------------------------------------------------
 
 // Fonts (OFL): Archivo Black for the wordmark, Lato for the claim - fetched, never committed.
+// Verify Content-Length so a truncated download can't silently break glyph outlines
+// (a short file still parses, but the tail glyphs render broken).
 async function font(url, file) {
   const p = join(tmpdir(), file);
-  if (!existsSync(p)) {
-    const r = await fetch(url);
-    if (!r.ok) throw new Error(`font fetch ${r.status}: ${url}`);
-    writeFileSync(p, Buffer.from(await r.arrayBuffer()));
+  if (!existsSync(p) || readFileSync(p).length < 50000) {
+    for (let attempt = 1; ; attempt++) {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`font fetch ${r.status}: ${url}`);
+      const buf = Buffer.from(await r.arrayBuffer());
+      const len = Number(r.headers.get("content-length") || 0);
+      if (len && buf.length !== len) {
+        if (attempt >= 3) throw new Error(`font truncated ${buf.length}/${len}: ${url}`);
+        continue;
+      }
+      writeFileSync(p, buf);
+      break;
+    }
   }
-  return opentype.parse(readFileSync(p).buffer);
+  const b = readFileSync(p);
+  return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength));
 }
 const archivo = await font("https://github.com/google/fonts/raw/main/ofl/archivoblack/ArchivoBlack-Regular.ttf", "prusa-ArchivoBlack.ttf");
 const lato = await font("https://github.com/google/fonts/raw/main/ofl/lato/Lato-Regular.ttf", "prusa-Lato-Regular.ttf");
@@ -78,8 +90,15 @@ const blockH = nameAsc + nameDesc + lineGap + claimAsc + claimDesc;
 const top = (H - blockH) / 2;
 const nameBaseline = top + nameAsc;
 const claimBaseline = nameBaseline + nameDesc + lineGap + claimAsc;
-const namePath = archivo.getPath(NAME, textX, nameBaseline, nameSize).toPathData(2);
-const claimPath = lato.getPath(CLAIM, textX, claimBaseline, claimSize).toPathData(2);
+// Render text as ONE <path> PER GLYPH, not a single merged path: resvg's tessellator
+// can silently abort a merged multi-subpath path partway through for certain
+// glyph/coordinate combinations, and per-glyph paths sidestep that entirely.
+// Colour is applied per theme, so only the geometry (d) is precomputed.
+const glyphD = (font, text, x, baseline, size) =>
+  font.getPaths(text, x, baseline, size).map((p) => p.toPathData(2)).filter(Boolean);
+const nameD = glyphD(archivo, NAME, textX, nameBaseline, nameSize);
+const claimD = glyphD(lato, CLAIM, textX, claimBaseline, claimSize);
+const paths = (ds, fill) => ds.map((d) => `<path d="${d}" fill="${fill}"/>`).join("");
 
 const LY = (H - LH) / 2;
 for (const t of THEMES) {
@@ -91,8 +110,8 @@ for (const t of THEMES) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${NAME}">
   <rect width="${W}" height="${H}" fill="${t.bg}"/>
   ${mark}
-  <path d="${namePath}" fill="${t.name}"/>
-  <path d="${claimPath}" fill="${t.claim}"/>
+  ${paths(nameD, t.name)}
+  ${paths(claimD, t.claim)}
 </svg>
 `;
   writeFileSync(join(__dir, `prusaslicer-banner${t.suffix}.svg`), svg);
