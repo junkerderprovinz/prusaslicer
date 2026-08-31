@@ -76,8 +76,25 @@ const lato = await font("https://github.com/google/fonts/raw/main/ofl/lato/Lato-
 const iconRaw = readFileSync(join(__dir, "icon.svg"), "utf8");
 const iconInner = iconRaw.replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
 
+// Left-anchor by the VISIBLE ink (the two "S" halves), not the box: the S sits inset
+// inside its 800x800 circle viewBox, so anchoring the box at x=165 would leave a big
+// left gap. Measure the halves' ink bbox and offset so the ink's left edge -> 165 and
+// its vertical centre -> H/2.
+//
+// The same measurement decides where the wordmark starts. Deriving that from the box
+// (startX + LH + gap) put the text at x=798 while the mark's ink ended at 497: a
+// 301px gulf instead of the 70 this file asks for, which is what "the text sits too
+// far right" looked like. The ink is 472 of the viewBox's 800 units wide, so the box
+// overstates the mark by 40%.
+const halves = iconInner.replace(/<circle[^>]*\/>\s*/, "");
+const inkBB = new Resvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">${halves}</svg>`, { fitTo: { mode: "original" } }).innerBBox();
+const k = LH / 800;
+const markX = startX - inkBB.x * k;
+const markY = H / 2 - (inkBB.y + inkBB.height / 2) * k;
+const markRight = startX + inkBB.width * k;
+
 // Auto-fit the wordmark to the free width, then place the [wordmark + claim] block.
-const textX = startX + LH + gap;
+const textX = markRight + gap;
 const maxNameW = W - textX - 90;
 if (archivo.getAdvanceWidth(NAME, nameSize) > maxNameW)
   nameSize *= maxNameW / archivo.getAdvanceWidth(NAME, nameSize);
@@ -100,15 +117,6 @@ const nameD = glyphD(archivo, NAME, textX, nameBaseline, nameSize);
 const claimD = glyphD(lato, CLAIM, textX, claimBaseline, claimSize);
 const paths = (ds, fill) => ds.map((d) => `<path d="${d}" fill="${fill}"/>`).join("");
 
-// Left-anchor by the VISIBLE ink (the two "S" halves), not the box: the S sits inset
-// inside its 800x800 circle viewBox, so anchoring the box at x=165 would leave a big
-// left gap. Measure the halves' ink bbox and offset so the ink's left edge -> 165 and
-// its vertical centre -> H/2.
-const halves = iconInner.replace(/<circle[^>]*\/>\s*/, "");
-const inkBB = new Resvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">${halves}</svg>`, { fitTo: { mode: "original" } }).innerBBox();
-const k = LH / 800;
-const markX = startX - inkBB.x * k;
-const markY = H / 2 - (inkBB.y + inkBB.height / 2) * k;
 for (const t of THEMES) {
   let inner = iconInner;
   if (!t.circle) inner = inner.replace(/<circle[^>]*\/>\s*/, "");     // drop the white backing disc
