@@ -14,8 +14,9 @@ name: Build & Push
 # digest, and a merge job assembles the multi-arch manifest for both registries.
 #
 # Triggers:
-#   * Push to main   → tags: latest, sha-<short>
-#   * Tag v*.*.*     → tags: latest, <version>, <major>, <major.minor>
+#   * Push to main   → tags: edge, sha-<short>
+#   * Tag v*.*.*     → tags: <version>, <major>, <major.minor>, plus latest
+#                      when the tag is the newest release in the repo
 #   * Weekly cron    – picks up upstream Selkies base + trixie prusa-slicer updates
 #   * Manual workflow_dispatch
 # -----------------------------------------------------------------------------
@@ -197,6 +198,40 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # Is the tag being built the newest release in this repo?
+      #
+      # `latest` moves only for a tag build, and only when that tag is the
+      # highest version in the repo. The two halves guard two different
+      # accidents. Gating on the tag stops an unreleased merge to main from
+      # landing in front of everyone who pulls `latest` before the release
+      # notes exist. Gating on "newest" stops a re-cut of an older version tag
+      # from dragging `latest` backwards onto a version that was already
+      # superseded.
+      #
+      # This job assembles the manifest from digests and otherwise needs no
+      # working copy, so the repo is checked out here for its tags alone.
+      # `sort -V` orders versions rather than strings, so v1.10.0 beats v1.9.0.
+      - name: Checkout (tags for the newest-release check)
+        if: github.ref_type == 'tag'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Is this the newest release tag?
+        id: newest
+        if: github.ref_type == 'tag'
+        run: |
+          set -euo pipefail
+          git fetch --tags --force --quiet
+          newest=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1)
+          echo "this tag: ${GITHUB_REF_NAME}"
+          echo "newest:   ${newest}"
+          if [ "$newest" = "${GITHUB_REF_NAME}" ]; then
+            echo "is_newest=true" >> "$GITHUB_OUTPUT"
+            echo "-> this build moves :latest"
+          else
+            echo "is_newest=false" >> "$GITHUB_OUTPUT"
+            echo "-> this build leaves :latest where it is"
+          fi
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
@@ -204,6 +239,15 @@ jobs:
           images: |
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
             name=docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }},enable=${{ vars.DOCKERHUB_USERNAME != '' }}
+          # `latest` means "the newest released version", and nothing else. It
+          # used to mean "the tip of main", which handed every puller whatever
+          # had just been merged, released or not. The tip of main is still
+          # built, still smoke-tested and still pullable, it just answers to
+          # `edge` now, so nobody gets it without asking for it.
+          #
+          # The `edge` condition is spelled out rather than written as
+          # {{is_default_branch}} because that placeholder also reports true for
+          # a tag build, which would put `edge` on every release as well.
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -211,7 +255,8 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=schedule,pattern=weekly
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=edge,enable=${{ github.ref_type == 'branch' && github.ref_name == github.event.repository.default_branch }}
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' && steps.newest.outputs.is_newest == 'true' }}
             type=sha,format=short
 
       - name: Create multi-arch manifests
