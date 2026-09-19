@@ -38,6 +38,15 @@ ENV TITLE="PrusaSlicer" \
     SELKIES_ENABLE_BASIC_AUTH="false" \
     RESTART_APP="true"
 
+# wxWidgets grows its text with the DPI Selkies hands a HiDPI browser but keeps
+# the layout it measured at 96 DPI, so a laptop streaming in physical pixels
+# gets clipped labels and buttons, and panels widened at that DPI stay wide on
+# a 100 % display afterwards. Streaming every browser at its CSS size with the
+# DPI fixed at 96 keeps one consistent size on any display. HiDPI can still be
+# switched on per browser in the Selkies sidebar.
+ENV SELKIES_USE_CSS_SCALING="true" \
+    SELKIES_SCALING_DPI="96"
+
 # prusa-slicer pulls in its own wxWidgets and GTK3 chain. On top of that: mesa
 # DRI so the 3D plater renders through llvmpipe without a GPU, GLU for the 3D
 # view, dbus-x11 for the autostart's dbus-launch, gnome-themes-extra for
