@@ -1,44 +1,27 @@
 #!/bin/sh
-# -----------------------------------------------------------------------------
-# PrusaSlicer autostart for linuxserver/baseimage-selkies
-# -----------------------------------------------------------------------------
-# NOTE POSIX: openbox runs this with /bin/sh (dash) and ignores the shebang, so
-# no bashisms here ([[ ]], arrays, ...) — dash silently skips them.
+# openbox runs this with /bin/sh (dash) whatever the shebang says, and dash
+# silently skips bashisms such as [[ ]] and arrays.
 #
-# Single-app session: PrusaSlicer is launched as the session's main window. It
-# opens maximised (the base's openbox maximises the top-level window, which is
-# exactly what you want for the full 3D plate).
-#
-# DO NOT PUT `exec` IN FRONT OF THE LAUNCH BELOW. Closing the window used to
-# leave an empty black desktop, because openbox keeps running when this script
-# ends. The base image solves that with its svc-watchdog service, enabled by
-# RESTART_APP (set in the Dockerfile), which watches for
+# The launch below must not be an `exec`. The base image's svc-watchdog, enabled
+# by RESTART_APP in the Dockerfile, restarts the app by watching for
 #
 #     pgrep -o -u abc -f "sh $HOME/.config/openbox/autostart"
 #
-# and runs that script again when it disappears. `exec` replaces this script's
-# process image, so the command line stops matching that pattern, the watchdog
-# never finds the process, waits for it forever and silently restarts nothing.
-# Measured on a sibling image: with `exec` the watchdog logs nothing at all and
-# a closed app stays closed; without it the watchdog reports the restart and
-# the app is back within two seconds. None of LinuxServer's own Selkies images
-# use `exec` here either.
-# -----------------------------------------------------------------------------
+# and `exec` replaces this process, so that pattern stops matching and a closed
+# PrusaSlicer stays closed on an empty desktop. LinuxServer's own Selkies images
+# do not `exec` here either.
 
-# Pin the XDG dirs to the persistent /config tree for EVERY PUID (under PUID=0
-# the session runs as literal root, whose default HOME differs from abc's), so
-# PrusaSlicer's profiles/config always land where they are read back.
+# Under PUID=0 the session runs as root, whose HOME differs from abc's, so the
+# XDG dirs are pinned to /config for every PUID.
 export XDG_CONFIG_HOME="/config/.config"
 export XDG_DATA_HOME="/config/.local/share"
 export XDG_CACHE_HOME="/config/.cache"
 
-# GTK chrome/dialogs follow the house dark look; PrusaSlicer's own Dark mode
-# (Preferences -> General -> Dark mode) styles the app itself independently.
+# This styles the GTK dialogs; PrusaSlicer's own dark mode is a separate
+# setting under Preferences, General.
 export GTK_THEME="${GTK_THEME:-Adwaita-dark}"
 
 echo "[prusaslicer-autostart] launching PrusaSlicer (XDG_CONFIG_HOME=$XDG_CONFIG_HOME, GTK_THEME=$GTK_THEME)" >&2
 
-# dbus-launch gives the GTK app a session bus (avoids the noisy dbus warnings
-# and lets file-chooser portals work). --exit-with-session ties the bus to the
-# app lifetime.
+# A session bus quiets the dbus warnings and lets file-chooser portals work.
 dbus-launch --exit-with-session /usr/bin/prusa-slicer

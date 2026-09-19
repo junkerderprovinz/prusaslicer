@@ -1,30 +1,14 @@
 name: Build & Push
 
-# -----------------------------------------------------------------------------
-# Builds the PrusaSlicer-on-Selkies image and pushes it to:
-#   * GitHub Container Registry  (ghcr.io/junkerderprovinz/prusaslicer)
-#   * Docker Hub                 (docker.io/<DOCKERHUB_USERNAME>/prusaslicer)
-#     — active only once the DOCKERHUB_USERNAME variable and DOCKERHUB_TOKEN
-#       secret are set together; until then the build stays GHCR-only.
-#
-# Architecture: one NATIVE build job per platform (amd64 on ubuntu-latest,
-# arm64 on ubuntu-24.04-arm — free for public repos). prusa-slicer is in Debian
-# trixie main for both arches. Each job boots its image as a smoke gate (the
-# prusa-slicer binary is present AND the Selkies WebUI serves), pushes by
-# digest, and a merge job assembles the multi-arch manifest for both registries.
-#
-# Triggers:
-#   * Push to main   → tags: edge, sha-<short>
-#   * Tag v*.*.*     → tags: <version>, <major>, <major.minor>, plus latest
-#                      when the tag is the newest release in the repo
-#   * Weekly cron    – picks up upstream Selkies base + trixie prusa-slicer updates
-#   * Manual workflow_dispatch
-# -----------------------------------------------------------------------------
+# Builds the image natively per platform, boots each one as a smoke gate, pushes
+# by digest and assembles the multi-arch manifest on GHCR. Docker Hub joins once
+# the DOCKERHUB_USERNAME variable and the DOCKERHUB_TOKEN secret are both set.
 
 on:
   push:
     branches: [ main ]
     tags: [ 'v*.*.*' ]
+  # Weekly, to pick up the Selkies base and trixie's prusa-slicer updates.
   schedule:
     - cron: '0 4 * * 0'
   workflow_dispatch:
@@ -81,17 +65,15 @@ jobs:
           tags: prusaslicer:smoke-${{ matrix.arch }}
           cache-from: type=gha,scope=build-${{ matrix.arch }}
 
-      # Smoke-test gate: the prusa-slicer binary must be present, and the Selkies
-      # WebUI must respond, before anything is pushed. Runs NATIVELY on both
-      # arches. `prusa-slicer --help` is best-effort (informational) — the hard
-      # gates are the binary presence and the WebUI boot.
-      - name: Smoke test — ${{ matrix.arch }} must ship prusa-slicer and serve the WebUI
+      # Nothing is pushed unless the binary is there and the WebUI answers.
+      # `prusa-slicer --help` is informational only, it may print nothing headless.
+      - name: "Smoke test ${{ matrix.arch }}: must ship prusa-slicer and serve the WebUI"
         run: |
           set -euo pipefail
           img=prusaslicer:smoke-${{ matrix.arch }}
           echo "== prusa-slicer binary present =="
           docker run --rm --entrypoint sh "$img" -c 'command -v prusa-slicer >/dev/null && test -x /usr/bin/prusa-slicer' \
-            || { echo "❌ /usr/bin/prusa-slicer missing — the package did not install"; exit 1; }
+            || { echo "❌ /usr/bin/prusa-slicer missing, the package did not install"; exit 1; }
           echo "== prusa-slicer --help (informational) =="
           docker run --rm --entrypoint sh "$img" -c 'timeout 30 prusa-slicer --help 2>&1 | head -3' || echo "(--help did not print headlessly; not fatal)"
           echo "== boot gate =="
@@ -113,12 +95,12 @@ jobs:
               exit 0
             fi
             if [ -z "$(docker ps -q --filter "name=$name")" ]; then
-              echo "❌ container exited early — logs:"; docker logs "$name" || true
+              echo "❌ container exited early, logs:"; docker logs "$name" || true
               docker rm -f "$name" >/dev/null; exit 1
             fi
             sleep 1
           done
-          echo "❌ WebUI did not respond within 150s — logs:"
+          echo "❌ WebUI did not respond within 150s, logs:"
           docker logs "$name" || true
           docker rm -f "$name" >/dev/null
           exit 1
@@ -198,19 +180,10 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Is the tag being built the newest release in this repo?
-      #
-      # `latest` moves only for a tag build, and only when that tag is the
-      # highest version in the repo. The two halves guard two different
-      # accidents. Gating on the tag stops an unreleased merge to main from
-      # landing in front of everyone who pulls `latest` before the release
-      # notes exist. Gating on "newest" stops a re-cut of an older version tag
-      # from dragging `latest` backwards onto a version that was already
-      # superseded.
-      #
-      # This job assembles the manifest from digests and otherwise needs no
-      # working copy, so the repo is checked out here for its tags alone.
-      # `sort -V` orders versions rather than strings, so v1.10.0 beats v1.9.0.
+      # `latest` moves only for a tag build, and only when that tag is the highest
+      # version in the repo: the first keeps an unreleased merge to main away from
+      # everyone who pulls `latest`, the second keeps a re-cut of an older tag from
+      # dragging `latest` backwards. This job needs the checkout for the tags alone.
       - name: Checkout (tags for the newest-release check)
         if: github.ref_type == 'tag'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -239,15 +212,10 @@ jobs:
           images: |
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
             name=docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }},enable=${{ vars.DOCKERHUB_USERNAME != '' }}
-          # `latest` means "the newest released version", and nothing else. It
-          # used to mean "the tip of main", which handed every puller whatever
-          # had just been merged, released or not. The tip of main is still
-          # built, still smoke-tested and still pullable, it just answers to
-          # `edge` now, so nobody gets it without asking for it.
-          #
-          # The `edge` condition is spelled out rather than written as
-          # {{is_default_branch}} because that placeholder also reports true for
-          # a tag build, which would put `edge` on every release as well.
+          # `latest` is the newest released version; the tip of main answers to
+          # `edge`. The `edge` condition is spelled out because
+          # {{is_default_branch}} also reports true for a tag build, which would
+          # put `edge` on every release as well.
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -296,12 +264,11 @@ jobs:
         env:
           PW: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          if [ -n "$PW" ]; then echo "go=true" >> "$GITHUB_OUTPUT"; else echo "DOCKERHUB_TOKEN not set — skipping Docker Hub description sync"; echo "go=false" >> "$GITHUB_OUTPUT"; fi
+          if [ -n "$PW" ]; then echo "go=true" >> "$GITHUB_OUTPUT"; else echo "DOCKERHUB_TOKEN not set, skipping Docker Hub description sync"; echo "go=false" >> "$GITHUB_OUTPUT"; fi
 
-      # Cosmetic: syncs the GitHub README to the Docker Hub repo description.
-      # continue-on-error so a bad/expired DOCKERHUB_PASSWORD (401 at login — the
-      # description API needs the account password or an edit-scoped PAT, not the
-      # push token) never reds a build whose images already pushed fine.
+      # The description API needs the account password or an edit-scoped PAT,
+      # not a push token, so a 401 here must not fail a build whose images
+      # already pushed.
       - name: Sync README to Docker Hub
         if: ${{ steps.dhdesc.outputs.go == 'true' }}
         continue-on-error: true
@@ -310,5 +277,5 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: ${{ vars.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-          short-description: "PrusaSlicer for Unraid, in your browser via Selkies — the 3D-printing slicer, no VNC client."
+          short-description: "PrusaSlicer for Unraid, in your browser via Selkies. The 3D-printing slicer, no VNC client."
           enable-url-completion: true

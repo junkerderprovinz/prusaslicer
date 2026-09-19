@@ -1,27 +1,18 @@
 # syntax=docker/dockerfile:1
-# ---------------------------------------------------------------------------
-# PrusaSlicer for Unraid — Selkies web desktop
-# ---------------------------------------------------------------------------
-# PrusaSlicer packaged on top of LinuxServer.io's baseimage-selkies and streamed
-# to the browser via Selkies (WebRTC). LinuxServer ships OrcaSlicer and Cura on
-# Selkies but no PrusaSlicer; the only third-party PrusaSlicer web images are
-# abandoned noVNC builds. This is a maintained, modern Selkies build.
+# PrusaSlicer for Unraid on LinuxServer.io's baseimage-selkies, streamed to the
+# browser over WebRTC.
 #
-# Why apt instead of an AppImage (as LSIO's orcaslicer does): PrusaSlicer no
-# longer publishes a Linux AppImage on GitHub (Windows/macOS only). Debian
-# trixie — which this base IS (baseimage-selkies:debiantrixie) — carries
-# `prusa-slicer` in main for both amd64 and arm64, so apt is the simplest and
-# most robust source and it tracks trixie security updates for free.
-#
-# Repository:  https://github.com/junkerderprovinz/prusaslicer
-# ---------------------------------------------------------------------------
+# PrusaSlicer publishes no Linux AppImage on GitHub, so it comes from apt rather
+# than the AppImage route LSIO's orcaslicer takes. The base is Debian trixie,
+# which carries prusa-slicer in main for amd64 and arm64 and brings its security
+# updates along.
 
 ARG BASE_TAG=debiantrixie
 FROM ghcr.io/linuxserver/baseimage-selkies:${BASE_TAG}
 
 LABEL maintainer="junkerderprovinz"
 LABEL org.opencontainers.image.title="prusaslicer"
-LABEL org.opencontainers.image.description="PrusaSlicer for Unraid with a Selkies web desktop — the 3D-printing slicer in your browser, no VNC client"
+LABEL org.opencontainers.image.description="PrusaSlicer for Unraid with a Selkies web desktop: the 3D-printing slicer in your browser, no VNC client"
 LABEL org.opencontainers.image.source="https://github.com/junkerderprovinz/prusaslicer"
 LABEL org.opencontainers.image.licenses="AGPL-3.0-only"
 LABEL org.opencontainers.image.vendor="junkerderprovinz"
@@ -32,37 +23,26 @@ LABEL org.opencontainers.image.vendor="junkerderprovinz"
 # enforces HTTP basic auth once a real CUSTOM_USER/PASSWORD is set.
 #
 # RESTART_APP=true turns on the base image's svc-watchdog, which runs the
-# openbox autostart again whenever the application disappears. Without it,
-# closing PrusaSlicer in the browser left an empty black desktop that only a
-# container restart could recover, since openbox keeps running on its own. The
-# watchdog finds the process by matching the autostart command line, which is
-# why rootfs/defaults/autostart must not `exec` the launch (the comment there
-# has the details).
+# openbox autostart again when the app disappears; otherwise closing PrusaSlicer
+# leaves an empty desktop until the container restarts. The watchdog matches the
+# autostart command line, which is why rootfs/defaults/autostart does not `exec`
+# the launch.
 #
-# NO MAX_RES DEFAULT HERE, ON PURPOSE. The virtual screen is the container's
-# biggest single memory item: the X server allocates the whole framebuffer up
-# front, about 4 bytes per pixel, so the base default of 15360x8640 is 530 MB
-# before anything else runs. The full range has to stay available, so the
-# choice belongs to the user: the Unraid template offers a preset dropdown
-# (MAX_RES) plus a free field (MAX_RES_CUSTOM) whose value wins, and
+# MAX_RES has no default here. The X server allocates the whole framebuffer up
+# front at about 4 bytes per pixel, so the base default of 15360x8640 costs
+# 530 MB, but the full range has to stay available. The template offers a preset
+# dropdown (MAX_RES) and a free field (MAX_RES_CUSTOM) that wins, and
 # init-screen-size settles the two before svc-xorg reads them.
 ENV TITLE="PrusaSlicer" \
     SELKIES_UI_TITLE="PrusaSlicer" \
     SELKIES_ENABLE_BASIC_AUTH="false" \
     RESTART_APP="true"
 
-# ---------------------------------------------------------------------------
-# Packages: PrusaSlicer + the GL/GTK/font runtime the headless desktop needs.
-# prusa-slicer pulls its own wxWidgets/GTK3 dependency chain; we add:
-#   * mesa DRI drivers (libgl1-mesa-dri) so the 3D plater renders via llvmpipe
-#     when no GPU is present (the base wires zink/virgl when one is),
-#   * libglu1-mesa (GLU, used by the slicer's 3D view),
-#   * dbus-x11 for the dbus-launch in the openbox autostart,
-#   * gnome-themes-extra for the Adwaita-dark GTK theme (house dark look on the
-#     native dialogs; PrusaSlicer has its own in-app dark mode too),
-#   * fontconfig + Noto/DejaVu/Liberation so UI text renders (missing fonts
-#     show as blank boxes on Qt/GTK), plus locales.
-# ---------------------------------------------------------------------------
+# prusa-slicer pulls in its own wxWidgets and GTK3 chain. On top of that: mesa
+# DRI so the 3D plater renders through llvmpipe without a GPU, GLU for the 3D
+# view, dbus-x11 for the autostart's dbus-launch, gnome-themes-extra for
+# Adwaita-dark on the native dialogs, and fonts, since missing ones show as
+# blank boxes.
 RUN set -eux; \
     apt-get update; \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -79,35 +59,26 @@ RUN set -eux; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*
 
-# ---------------------------------------------------------------------------
-# Overlay: rootfs (s6 services, openbox autostart, startwm.sh) + init banner.
-# ---------------------------------------------------------------------------
 COPY rootfs/ /
 
-# ---------------------------------------------------------------------------
-# Assert the X service we hook the screen size onto is really the base's
-# ---------------------------------------------------------------------------
-# rootfs/ ships svc-xorg/dependencies.d/init-screen-size so our oneshot settles
-# MAX_RES before Xvfb reads it. If a base bump ever renames that service, the
-# COPY above would CREATE /etc/s6-overlay/s6-rc.d/svc-xorg as a service
-# directory with a dependency and no `type` file. s6-rc-compile then aborts in
-# stage 2 and EVERY container exits at boot, while the build itself stays
-# green, so the failure would only show up in users' logs. Checking for the
-# base's own `type` file turns that into a build error instead.
+# rootfs/ ships svc-xorg/dependencies.d/init-screen-size so MAX_RES is settled
+# before Xvfb reads it. If a base bump renamed svc-xorg, the COPY above would
+# create it as a service directory without a `type` file, s6-rc-compile would
+# abort and every container would exit at boot while the build stayed green.
+# Checking for the base's own `type` file makes that a build error.
 RUN set -eux; \
     t=/etc/s6-overlay/s6-rc.d/svc-xorg/type; \
-    [ -f "$t" ] || { echo "ERROR: $t missing — the selkies base renamed or dropped svc-xorg; re-point rootfs/etc/s6-overlay/s6-rc.d/svc-xorg/dependencies.d/init-screen-size at the new service"; exit 1; }; \
+    [ -f "$t" ] || { echo "ERROR: $t missing, the selkies base renamed or dropped svc-xorg; re-point rootfs/etc/s6-overlay/s6-rc.d/svc-xorg/dependencies.d/init-screen-size at the new service"; exit 1; }; \
     echo "prusaslicer: screen-size oneshot ordered before svc-xorg"
 
-# Init-log banner: single source at .github/assets/banner-raw.txt (CR stripped
-# so a Windows checkout can't break it). Also blank the base's own adduser
-# branding banner so the log shows only our print-banner.sh block.
+# CR is stripped so a Windows checkout cannot break the banner. The base's own
+# adduser branding is blanked so the log shows only the print-banner.sh block.
 COPY .github/assets/banner-raw.txt /usr/local/share/banner-raw.txt
 RUN tr -d '\r' < /usr/local/share/banner-raw.txt > /usr/local/share/banner.txt; \
     rm -f /usr/local/share/banner-raw.txt; \
     : > /etc/s6-overlay/s6-rc.d/init-adduser/branding 2>/dev/null || true
 
-# CA/PWA icon shown in the Selkies web client tab + sidebar.
+# Tab and sidebar icon of the Selkies web client.
 COPY .github/assets/icon.png /usr/share/selkies/www/icon.png
 
 RUN chmod +x /usr/local/bin/print-banner.sh \
