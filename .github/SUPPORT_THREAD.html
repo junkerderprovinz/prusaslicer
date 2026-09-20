@@ -30,8 +30,8 @@
 </head>
 <body>
 
-<h1>PrusaSlicer – the 3D-printing slicer, in your browser, for Unraid</h1>
-<p class="subtitle">Have your model and slice it too — no VNC client, no local install.</p>
+<h1>PrusaSlicer: the 3D-printing slicer, in your browser, for Unraid</h1>
+<p class="subtitle">Have your model and slice it too. No VNC client, no local install.</p>
 
 <p align="center">
   <a href="https://github.com/junkerderprovinz/prusaslicer">
@@ -48,11 +48,11 @@
 </p>
 
 <h2>What is this?</h2>
-<p>The full <strong>PrusaSlicer</strong> desktop app — the FDM/SLA slicer from Prusa Research —
+<p>The full <strong>PrusaSlicer</strong> desktop app (the FDM/SLA slicer from Prusa Research)
 running in one container and streamed to your browser over
 <a href="https://github.com/selkies-project/selkies">Selkies</a> (WebRTC). Open the WebUI and
 slice: no X client, no VNC viewer, nothing to install on your workstation. The WebRTC stream
-keeps the 3D plate smooth to rotate, zoom and drag — the part of slicing where the older noVNC
+keeps the 3D plate smooth to rotate, zoom and drag, the part of slicing where the older noVNC
 containers feel laggy.</p>
 <p>LinuxServer ship OrcaSlicer and Cura on Selkies but <strong>no PrusaSlicer</strong>, and the
 only other browser-based PrusaSlicer images are years-old, abandoned noVNC builds. This is a
@@ -60,20 +60,20 @@ maintained, modern Selkies build for <strong>amd64 and arm64</strong>.</p>
 
 <h2>Highlights</h2>
 <ul>
-  <li><strong>The real PrusaSlicer desktop</strong>, streamed over WebRTC (Selkies) — smooth 3D plate, native Prusa printer/filament profiles</li>
+  <li><strong>The real PrusaSlicer desktop</strong>, streamed over WebRTC (Selkies): smooth 3D plate, native Prusa printer/filament profiles</li>
   <li>Installed from Debian trixie's <code>prusa-slicer</code> package (PrusaSlicer no longer ships a Linux AppImage), so it tracks Debian security updates</li>
-  <li><strong>No login by default</strong> for trusted-LAN use — set a WebUI username + password to enable HTTP basic auth</li>
-  <li><strong>Dark by default</strong> — dark GTK chrome; PrusaSlicer's own Dark mode is under Preferences → General</li>
+  <li><strong>No login by default</strong> for trusted-LAN use. Set a WebUI username + password to enable HTTP basic auth</li>
+  <li><strong>Dark by default</strong>: dark GTK chrome; PrusaSlicer's own Dark mode is under Preferences → General</li>
   <li>Profiles &amp; configuration persist under <code>/config</code>; your models and G-code live under <code>/storage</code></li>
   <li>GPU-accelerated when a GPU is passed through, software rendering otherwise (works either way)</li>
-  <li>Multi-arch — amd64 + arm64</li>
+  <li>Multi-arch: amd64 + arm64</li>
   <li>Image: <code>junkerderprovinz/prusaslicer:latest</code> (Docker Hub / GHCR)</li>
 </ul>
 
 <h2>Requirements</h2>
 <ul>
   <li>Unraid 6.12+</li>
-  <li>Open the WebUI over <strong>HTTPS on port 3001</strong> (self-signed cert — accept it once). Port 3000 (HTTP) is for a reverse proxy that terminates TLS, not direct browser access</li>
+  <li>Open the WebUI over <strong>HTTPS on port 3001</strong> (self-signed cert, accept it once). Port 3000 (HTTP) is for a reverse proxy that terminates TLS, not direct browser access</li>
   <li>Mount your models / G-code folder to <code>/storage</code> (defaults to <code>/mnt/user</code>) so imports and slices land on your array</li>
   <li>For the smoothest 3D viewport, pass through a GPU; without one it falls back to software rendering, which still works</li>
 </ul>
@@ -99,7 +99,7 @@ Not affiliated with or endorsed by Prusa Research. If this saves you a slicer se
 
 <hr>
 
-<p class="footnote">Self-hosted, MIT-licensed wrapper — you run it, you own your data and the responsibility.</p>
+<p class="footnote">Self-hosted, MIT-licensed wrapper. You run it, you own your data and the responsibility.</p>
 
 </body>
 </html>

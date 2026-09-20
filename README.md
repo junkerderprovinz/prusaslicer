@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/prusaslicer-banner-dark.png">
-    <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/prusaslicer-banner.png" alt="PrusaSlicer — have your model and slice it too" width="100%">
+    <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/prusaslicer-banner.png" alt="PrusaSlicer: have your model and slice it too" width="100%">
   </picture>
 </p>
 
@@ -17,10 +17,10 @@
 </p>
 
 <p align="center">
-<b>PrusaSlicer, in your browser.</b> Slice from any device — no VNC client, no local install.<br>
+<b>PrusaSlicer, in your browser.</b> Slice from any device. No VNC client, no local install.<br>
 This runs the full PrusaSlicer desktop app inside a single container and streams it to your
 browser over <a href="https://github.com/selkies-project/selkies">Selkies</a> (WebRTC), so the
-3D plate stays smooth to rotate, zoom and drag — the part of slicing where the old noVNC
+3D plate stays smooth to rotate, zoom and drag, the part of slicing where the old noVNC
 containers feel laggy.
 </p>
 
@@ -60,8 +60,8 @@ If it has earned a place on your server or computer, toss a coin to your knight:
 
 ## 1. What is this?
 
-An **own-image container** that packages [**PrusaSlicer**](https://github.com/prusa3d/PrusaSlicer) —
-the FDM/SLA slicer from Prusa Research — on top of
+An **own-image container** that packages [**PrusaSlicer**](https://github.com/prusa3d/PrusaSlicer)
+(the FDM/SLA slicer from Prusa Research) on top of
 [**LinuxServer.io's baseimage-selkies**](https://github.com/linuxserver/docker-baseimage-selkies)
 and serves its desktop UI straight to your browser. No X client, no VNC viewer, no separate
 install on your workstation: open the WebUI and slice.
@@ -79,15 +79,15 @@ both architectures.
 ## 2. Screenshots
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/screenshots/plater-model.png" alt="PrusaSlicer plater — a model on the 3D build plate, streamed to the browser" width="90%">
-  <br><em>The plater — place and arrange models on the 3D build plate, right in your browser over Selkies.</em>
+  <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/screenshots/plater-model.png" alt="PrusaSlicer plater with a model on the 3D build plate, streamed to the browser" width="90%">
+  <br><em>The plater: place and arrange models on the 3D build plate, right in your browser over Selkies.</em>
 </p>
 
 <br>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/screenshots/preview.png" alt="PrusaSlicer sliced preview — colour-coded toolpaths, per-feature breakdown and print-time estimate" width="90%">
-  <br><em>Sliced preview — colour-coded toolpaths, a per-feature breakdown and the print-time / filament estimate, then export the G-code.</em>
+  <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/screenshots/preview.png" alt="PrusaSlicer sliced preview with colour-coded toolpaths, per-feature breakdown and print-time estimate" width="90%">
+  <br><em>Sliced preview: colour-coded toolpaths, a per-feature breakdown and the print-time / filament estimate, then export the G-code.</em>
 </p>
 
 <br>
@@ -97,7 +97,7 @@ both architectures.
 Slicing is a 3D-viewport workflow: you rotate the plate, zoom into overhangs, drag and orient
 models, and scrub the layer/tool-path preview. Over the older **noVNC** stack that continuous
 canvas feels laggy because the whole frame is re-encoded on every change. **Selkies streams the
-desktop over WebRTC**, the same reason LinuxServer moved Orca, Cura, Blender and FreeCAD onto it —
+desktop over WebRTC**, the same reason LinuxServer moved Orca, Cura, Blender and FreeCAD onto it,
 so the plate stays responsive. When the host has a GPU the base wires it through; without one it
 falls back to software rendering so it still works.
 
@@ -105,7 +105,7 @@ falls back to software rendering so it still works.
 
 ## 4. Install on Unraid
 
-Requires **Unraid 6.12+**. Install via **Community Applications** — search for **PrusaSlicer**
+Requires **Unraid 6.12+**. Install via **Community Applications**: search for **PrusaSlicer**
 (look for the `junkerderprovinz` maintainer). Or add the template repository manually under
 **Docker → Add Container → Template repositories**:
 
@@ -164,21 +164,21 @@ configuration (printer/filament/print profiles) persists under **`/config`**.
 
 > [!NOTE]
 > The WebUI has **no login by default** for trusted-LAN use. Never expose it directly to the
-> internet — put it behind a VPN or a reverse proxy that adds authentication, or set
+> internet. Put it behind a VPN or a reverse proxy that adds authentication, or set
 > `CUSTOM_USER` + `PASSWORD` to enable the built-in basic auth.
 
 <br>
 
 ## 6. First use
 
-1. Open the WebUI — PrusaSlicer starts maximised, ready to slice.
+1. Open the WebUI. PrusaSlicer starts maximised, ready to slice.
 2. Run the **Configuration Assistant** (first launch) and pick your printer(s) and filament(s).
 3. Import a model (`File → Import`, or drag it onto the plate from your mounted folder), slice,
    and export the G-code to your mounted output folder.
 4. Prefer a dark UI? PrusaSlicer has its own **Dark mode** under *Preferences → General → Dark
    mode*; the container's GTK chrome is already dark.
 
-Closing the PrusaSlicer window simply reopens a fresh instance — it is the container's single
+Closing the PrusaSlicer window simply reopens a fresh instance. It is the container's single
 app (kiosk model), so there is nothing else to manage.
 
 <br>
@@ -203,12 +203,12 @@ tested (the binary is present **and** the WebUI answers) before publishing, and 
 
 ## 8. Credits
 
-- **[PrusaSlicer](https://github.com/prusa3d/PrusaSlicer)** by Prusa Research (AGPL-3.0) — the
+- **[PrusaSlicer](https://github.com/prusa3d/PrusaSlicer)** by Prusa Research (AGPL-3.0), the
   slicer this image packages. Installed from the Debian `prusa-slicer` package. This project is
   **not affiliated with or endorsed by Prusa Research**.
 - **[LinuxServer.io baseimage-selkies](https://github.com/linuxserver/docker-baseimage-selkies)**
-  (GPL-3.0) — the Selkies web-desktop base.
-- **[Selkies](https://github.com/selkies-project/selkies)** — the WebRTC desktop streaming stack.
+  (GPL-3.0), the Selkies web-desktop base.
+- **[Selkies](https://github.com/selkies-project/selkies)**, the WebRTC desktop streaming stack.
 
 See [`NOTICE`](NOTICE) for the full bundled-software license list. This repository's own wrapper
 (Dockerfile, rootfs, scripts, artwork) is AGPL-3.0; see [`LICENSE`](LICENSE).
