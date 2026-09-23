@@ -50,8 +50,8 @@
 <h2>What is this?</h2>
 <p>The full <strong>PrusaSlicer</strong> desktop app (the FDM/SLA slicer from Prusa Research)
 running in one container and streamed to your browser over
-<a href="https://github.com/selkies-project/selkies">Selkies</a> (WebRTC). Open the WebUI and
-slice: no X client, no VNC viewer, nothing to install on your workstation. The WebRTC stream
+<a href="https://github.com/selkies-project/selkies">Selkies</a> as H.264 video. Open the WebUI and
+slice: no X client, no VNC viewer, nothing to install on your workstation. The video stream
 keeps the 3D plate smooth to rotate, zoom and drag, the part of slicing where the older noVNC
 containers feel laggy.</p>
 <p>LinuxServer ship OrcaSlicer and Cura on Selkies but <strong>no PrusaSlicer</strong>, and the
@@ -60,7 +60,7 @@ maintained, modern Selkies build for <strong>amd64 and arm64</strong>.</p>
 
 <h2>Highlights</h2>
 <ul>
-  <li><strong>The real PrusaSlicer desktop</strong>, streamed over WebRTC (Selkies): smooth 3D plate, native Prusa printer/filament profiles</li>
+  <li><strong>The real PrusaSlicer desktop</strong>, streamed as H.264 video (Selkies): smooth 3D plate, native Prusa printer/filament profiles</li>
   <li>Installed from Debian trixie's <code>prusa-slicer</code> package (PrusaSlicer no longer ships a Linux AppImage), so it tracks Debian security updates</li>
   <li><strong>No login by default</strong> for trusted-LAN use. Set a WebUI username + password to enable HTTP basic auth</li>
   <li><strong>Dark by default</strong>: dark GTK chrome; PrusaSlicer's own Dark mode is under Preferences → General</li>

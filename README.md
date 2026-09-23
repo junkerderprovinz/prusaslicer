@@ -19,7 +19,7 @@
 <p align="center">
 <b>PrusaSlicer, in your browser.</b> Slice from any device. No VNC client, no local install.<br>
 This runs the full PrusaSlicer desktop app inside a single container and streams it to your
-browser over <a href="https://github.com/selkies-project/selkies">Selkies</a> (WebRTC), so the
+browser over <a href="https://github.com/selkies-project/selkies">Selkies</a> (H.264 video), so the
 3D plate stays smooth to rotate, zoom and drag, the part of slicing where the old noVNC
 containers feel laggy.
 </p>
@@ -68,7 +68,7 @@ install on your workstation: open the WebUI and slice.
 
 LinuxServer ship OrcaSlicer and Cura on Selkies, but **not PrusaSlicer**, and the only other
 browser-based PrusaSlicer images are years-old, abandoned noVNC builds. This is a maintained,
-modern **Selkies (WebRTC)** build for **amd64 and arm64**.
+modern **Selkies 2.0** build for **amd64 and arm64**.
 
 PrusaSlicer itself is installed from **Debian trixie's `prusa-slicer` package** (PrusaSlicer no
 longer ships a Linux AppImage), so it tracks Debian's security updates and works natively on
@@ -97,7 +97,7 @@ both architectures.
 Slicing is a 3D-viewport workflow: you rotate the plate, zoom into overhangs, drag and orient
 models, and scrub the layer/tool-path preview. Over the older **noVNC** stack that continuous
 canvas feels laggy because the whole frame is re-encoded on every change. **Selkies streams the
-desktop over WebRTC**, the same reason LinuxServer moved Orca, Cura, Blender and FreeCAD onto it,
+desktop as H.264 video**, the same reason LinuxServer moved Orca, Cura, Blender and FreeCAD onto it,
 so the plate stays responsive. When the host has a GPU the base wires it through; without one it
 falls back to software rendering so it still works.
 
@@ -126,26 +126,13 @@ Then open the WebUI on the mapped **HTTPS** port (default `3001`).
 | `CUSTOM_HTTPS_PORT` | No | HTTPS port the WebUI is served on (default `3001`). |
 | `PUID` / `PGID` | No | User/group the app runs as, so files it writes match your share ownership. The Unraid template sets `99`/`100` (nobody/users). |
 | `TZ` | No | Timezone (e.g. `Europe/Berlin`). |
-| `MAX_RES` | No | Virtual screen the container serves, picked from a dropdown of presets. This is where the container's memory goes, see below. |
-| `MAX_RES_CUSTOM` | No | Your own `WIDTHxHEIGHT` instead of a preset, e.g. `3440x1440`. Wins over `MAX_RES` when set. |
 
 ### Screen size and memory use
 
-The X server reserves its whole virtual framebuffer up front, at roughly **4 bytes per pixel**, no
-matter how big your browser window actually is. At the full `15360x8640` that is 530 MB before
-anything else runs, which is most of what this container uses.
-
-The image ships that full size, so every resolution stays available. If you would rather have the
-RAM back, pick a smaller screen in the template: the dropdown lists sizes from 1080p upwards with
-the cost of each, and the free field next to it takes anything not in the list. A value that is not
-a `WIDTHxHEIGHT` pair is ignored with a note in the container log rather than stopping the
-container.
-
-Pick a size at least as big as the largest browser window you open the WebUI in. A bigger window
-does not get a bigger desktop: the desktop keeps its last size in the top-left corner and the rest
-of the window stays black. This image streams at the size your browser reports, so a 1600x1000
-window on a laptop set to 200 % counts as 1600x1000. With HiDPI switched on in the Selkies sidebar
-the same window counts in physical pixels, 3200x2000.
+The desktop follows your browser window: Selkies resizes the screen to the size the browser
+reports, so there is no screen size to set and memory only grows with the window you actually use.
+A 1600x1000 window on a laptop set to 200 % counts as 1600x1000. With HiDPI switched on in the
+Selkies sidebar the same window counts in physical pixels, 3200x2000.
 
 **Display scaling** follows the browser without any setting. Every browser is streamed at the size
 it reports, with the desktop at 96 DPI, so PrusaSlicer looks the same on a 100 % desktop and on a
@@ -186,7 +173,7 @@ app (kiosk model), so there is nothing else to manage.
 ## 7. How it works
 
 ```
-Browser ──WebRTC (Selkies)──> PrusaSlicer container
+Browser ──WebSockets (Selkies)──> PrusaSlicer container
                               ├─ nginx (Selkies WebUI, HTTPS :3001)
                               ├─ openbox + Selkies desktop
                               └─ /usr/bin/prusa-slicer  (Debian trixie package)
@@ -208,7 +195,7 @@ tested (the binary is present **and** the WebUI answers) before publishing, and 
   **not affiliated with or endorsed by Prusa Research**.
 - **[LinuxServer.io baseimage-selkies](https://github.com/linuxserver/docker-baseimage-selkies)**
   (GPL-3.0), the Selkies web-desktop base.
-- **[Selkies](https://github.com/selkies-project/selkies)**, the WebRTC desktop streaming stack.
+- **[Selkies](https://github.com/selkies-project/selkies)**, the desktop streaming stack.
 
 See [`NOTICE`](NOTICE) for the full bundled-software license list. This repository's own wrapper
 (Dockerfile, rootfs, scripts, artwork) is AGPL-3.0; see [`LICENSE`](LICENSE).
