@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 # PrusaSlicer for Unraid on LinuxServer.io's baseimage-selkies, streamed to the
-# browser over WebRTC.
+# browser.
 #
 # PrusaSlicer publishes no Linux AppImage on GitHub, so it comes from apt rather
 # than the AppImage route LSIO's orcaslicer takes. The base is Debian trixie,
 # which carries prusa-slicer in main for amd64 and arm64 and brings its security
 # updates along.
 
-ARG BASE_TAG=debiantrixie@sha256:a0b70771408d216d3f80f8cf06bc0380afb717a5c8fc68871792b8d49ffa4995
+ARG BASE_TAG=debiantrixie@sha256:5b448b9d62b6f471ba96104bdf2daedef3ed6852fdea6a780d341b4447a7a68d
 FROM ghcr.io/linuxserver/baseimage-selkies:${BASE_TAG}
 
 LABEL maintainer="junkerderprovinz"
@@ -18,21 +18,16 @@ LABEL org.opencontainers.image.licenses="AGPL-3.0-only"
 LABEL org.opencontainers.image.vendor="junkerderprovinz"
 
 # TITLE feeds the PWA manifest; SELKIES_UI_TITLE is the visible tab/sidebar
-# title of the Selkies web client. SELKIES_ENABLE_BASIC_AUTH=false keeps the
-# no-login-by-default behaviour (see init-nologin); the base's nginx still
-# enforces HTTP basic auth once a real CUSTOM_USER/PASSWORD is set.
+# title of the Selkies web client. Selkies will not start with basic auth on and
+# no password, so SELKIES_ENABLE_BASIC_AUTH=false keeps the no-login default;
+# the base's nginx still enforces HTTP basic auth once a real
+# CUSTOM_USER/PASSWORD is set.
 #
 # RESTART_APP=true turns on the base image's svc-watchdog, which runs the
 # openbox autostart again when the app disappears; otherwise closing PrusaSlicer
 # leaves an empty desktop until the container restarts. The watchdog matches the
 # autostart command line, which is why rootfs/defaults/autostart does not `exec`
 # the launch.
-#
-# MAX_RES has no default here. The X server allocates the whole framebuffer up
-# front at about 4 bytes per pixel, so the base default of 15360x8640 costs
-# 530 MB, but the full range has to stay available. The template offers a preset
-# dropdown (MAX_RES) and a free field (MAX_RES_CUSTOM) that wins, and
-# init-screen-size settles the two before svc-xorg reads them.
 ENV TITLE="PrusaSlicer" \
     SELKIES_UI_TITLE="PrusaSlicer" \
     SELKIES_ENABLE_BASIC_AUTH="false" \
@@ -70,15 +65,15 @@ RUN set -eux; \
 
 COPY rootfs/ /
 
-# rootfs/ ships svc-xorg/dependencies.d/init-screen-size so MAX_RES is settled
-# before Xvfb reads it. If a base bump renamed svc-xorg, the COPY above would
+# rootfs/ ships svc-xorg/dependencies.d/init-dpi so the DPI is settled before
+# Xvfb starts. If a base bump renamed svc-xorg, the COPY above would
 # create it as a service directory without a `type` file, s6-rc-compile would
 # abort and every container would exit at boot while the build stayed green.
 # Checking for the base's own `type` file makes that a build error.
 RUN set -eux; \
     t=/etc/s6-overlay/s6-rc.d/svc-xorg/type; \
-    [ -f "$t" ] || { echo "ERROR: $t missing, the selkies base renamed or dropped svc-xorg; re-point rootfs/etc/s6-overlay/s6-rc.d/svc-xorg/dependencies.d/init-screen-size at the new service"; exit 1; }; \
-    echo "prusaslicer: screen-size oneshot ordered before svc-xorg"
+    [ -f "$t" ] || { echo "ERROR: $t missing, the selkies base renamed or dropped svc-xorg; re-point rootfs/etc/s6-overlay/s6-rc.d/svc-xorg/dependencies.d/init-dpi at the new service"; exit 1; }; \
+    echo "prusaslicer: dpi oneshot ordered before svc-xorg"
 
 # CR is stripped so a Windows checkout cannot break the banner. The base's own
 # adduser branding is blanked so the log shows only the print-banner.sh block.
@@ -91,11 +86,8 @@ RUN tr -d '\r' < /usr/local/share/banner-raw.txt > /usr/local/share/banner.txt; 
 COPY .github/assets/icon.png /usr/share/selkies/www/icon.png
 
 RUN chmod +x /usr/local/bin/print-banner.sh \
-             /usr/local/bin/selkies-resolution.sh \
-             /etc/s6-overlay/s6-rc.d/init-screen-size/run \
              /etc/s6-overlay/s6-rc.d/init-dpi/run \
              /etc/s6-overlay/s6-rc.d/init-prusaslicer/run \
-             /etc/s6-overlay/s6-rc.d/init-nologin/run \
              /etc/s6-overlay/s6-rc.d/svc-prusaslicer-ready/run \
              /defaults/autostart \
              /defaults/startwm.sh
