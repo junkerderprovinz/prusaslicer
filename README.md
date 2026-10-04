@@ -24,6 +24,18 @@ browser over <a href="https://github.com/selkies-project/selkies">Selkies</a> (H
 containers feel laggy.
 </p>
 
+<!-- download-buttons: written by scripts/gen_download_buttons.py -->
+<p align="center">
+  <a href="https://ca.unraid.net/apps/prusaslicer-0118v4d0mxjg49"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/download-buttons/buttons.svg?v=a82cc8264e34#svgView(viewBox(0,0,841.9,245.3))" alt="Install from Unraid&#x27;s Community Applications" width="160" height="46.618"></a>
+  &nbsp;
+  <a href="https://hub.docker.com/r/junkerderprovinz/prusaslicer/"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/download-buttons/buttons.svg?v=a82cc8264e34#svgView(viewBox(866,0,841.9,245.3))" alt="Run it with Docker" width="160" height="46.618"></a>
+  &nbsp;
+  <a href="https://github.com/junkerderprovinz/prusaslicer/releases/latest"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/download-buttons/buttons.svg?v=a82cc8264e34#svgView(viewBox(1732,0,841.9,245.3))" alt="Download the source archive" width="160" height="46.618"></a>
+</p>
+<!-- /download-buttons -->
+
+<br>
+
 <p align="center">
 A one-knight job: I build it, keep it running, work through the issues and add what people ask for, until nothing is missing. It is free, with no accounts, no telemetry, no ads and no paid tier. No asterisk anywhere. Nothing readable ever leaves your own walls. Forged on evenings and weekends, with heart and stubbornness.
 </p>
@@ -32,187 +44,76 @@ A one-knight job: I build it, keep it running, work through the issues and add w
 If it has earned a place on your server or computer, toss a coin to your knight: it helps cover the costs and keeps the project alive. It also makes this knight's heart beat a little faster. Three ways below, whichever suits you.
 </p>
 
+<!-- give-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
-  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/give.svg#svgView(viewBox(0,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.62"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/download-buttons/buttons.svg?v=a82cc8264e34#svgView(viewBox(2598,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/give.svg#svgView(viewBox(841.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.62"></a>
+  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/download-buttons/buttons.svg?v=a82cc8264e34#svgView(viewBox(3464,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/give.svg#svgView(viewBox(1683.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.62"></a>
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/download-buttons/buttons.svg?v=a82cc8264e34#svgView(viewBox(4330,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
 </p>
+<!-- /give-buttons -->
 
 <br>
 
 ## Table of Contents
 
-1. [What is this?](#1-what-is-this)
-2. [Screenshots](#2-screenshots)
-3. [Why Selkies?](#3-why-selkies)
-4. [Install on Unraid](#4-install-on-unraid)
-5. [Configuration](#5-configuration)
-6. [First use](#6-first-use)
-7. [How it works](#7-how-it-works)
-8. [Credits](#8-credits)
-9. [License](#9-license)
-10. [How AI is used here](#10-how-ai-is-used-here)
-11. [Support this project](#11-support-this-project)
+1. [What it looks like](#1-what-it-looks-like)
+2. [What it does](#2-what-it-does)
+3. [Getting started](#3-getting-started)
+4. [How AI is used here](#4-how-ai-is-used-here)
+5. [Support this project](#5-support-this-project)
 
 <br>
 
-## 1. What is this?
+## 1. What it looks like
 
-An **own-image container** that packages [**PrusaSlicer**](https://github.com/prusa3d/PrusaSlicer)
-(the FDM/SLA slicer from Prusa Research) on top of
-[**LinuxServer.io's baseimage-selkies**](https://github.com/linuxserver/docker-baseimage-selkies)
-and serves its desktop UI straight to your browser. No X client, no VNC viewer, no separate
-install on your workstation: open the WebUI and slice.
-
-LinuxServer ship OrcaSlicer and Cura on Selkies, but **not PrusaSlicer**, and the only other
-browser-based PrusaSlicer images are years-old, abandoned noVNC builds. This is a maintained,
-modern **Selkies 2.0** build for **amd64 and arm64**.
-
-PrusaSlicer itself is installed from **Debian trixie's `prusa-slicer` package** (PrusaSlicer no
-longer ships a Linux AppImage), so it tracks Debian's security updates and works natively on
-both architectures.
-
-<br>
-
-## 2. Screenshots
+The models in these pictures are the 3DBenchy and the bunny from PrusaSlicer's own shape gallery, sliced in a test container.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/screenshots/plater-model.png" alt="PrusaSlicer plater with a model on the 3D build plate, streamed to the browser" width="90%">
-  <br><em>The plater: place and arrange models on the 3D build plate, right in your browser over Selkies.</em>
+  <img src=".github/assets/screenshots/prusaslicer-plater.png" alt="PrusaSlicer in a browser window with a 3DBenchy and a bunny on the build plate of a Prusa CORE One" width="100%">
+  <br><em>The plater: place, scale and arrange models on the 3D build plate, right in your browser</em>
+</p>
+
+<p align="center">
+  <img src=".github/assets/screenshots/prusaslicer-preview.png" alt="The sliced preview with the toolpaths of both models, the feature legend and the print-time estimate" width="100%">
+  <br><em>The sliced preview: toolpaths by feature, print time and filament, then export the G-code</em>
 </p>
 
 <br>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/screenshots/preview.png" alt="PrusaSlicer sliced preview with colour-coded toolpaths, per-feature breakdown and print-time estimate" width="90%">
-  <br><em>Sliced preview: colour-coded toolpaths, a per-feature breakdown and the print-time / filament estimate, then export the G-code.</em>
-</p>
+## 2. What it does
+
+- **The full PrusaSlicer desktop app** in a single container, for amd64 and arm64. No X client, no VNC viewer and nothing to install on your workstation.
+- **Selkies instead of noVNC.** The desktop arrives as H.264 video, so rotating, zooming and dragging on the 3D plate stays smooth, which is where the old noVNC containers lag. A GPU on the host is used when there is one, and software rendering takes over when there is not.
+- **PrusaSlicer from Debian trixie's `prusa-slicer` package**, since Prusa no longer ships a Linux AppImage, so it gets Debian's security updates and runs natively on both architectures.
+- **Profiles that persist.** Printer, filament and print profiles live in `/config`, and closing PrusaSlicer starts a fresh one instead of leaving a black screen.
 
 <br>
 
-## 3. Why Selkies?
+## 3. Getting started
 
-Slicing is a 3D-viewport workflow: you rotate the plate, zoom into overhangs, drag and orient
-models, and scrub the layer/tool-path preview. Over the older **noVNC** stack that continuous
-canvas feels laggy because the whole frame is re-encoded on every change. **Selkies streams the
-desktop as H.264 video**, the same reason LinuxServer moved Orca, Cura, Blender and FreeCAD onto it,
-so the plate stays responsive. When the host has a GPU the base wires it through; without one it
-falls back to software rendering so it still works.
+On Unraid, install PrusaSlicer from [Community Applications](https://ca.unraid.net/apps/prusaslicer-0118v4d0mxjg49). Map your models and G-code folder to `/storage` (the template uses `/mnt/user`, which reaches all shares), then open the WebUI on the HTTPS port, `3001` by default.
 
-<br>
+Without Unraid:
 
-## 4. Install on Unraid
-
-Requires **Unraid 6.12+**. Install via **Community Applications**: search for **PrusaSlicer**
-(look for the `junkerderprovinz` maintainer). Or add the template repository manually under
-**Docker → Add Container → Template repositories**:
-
-```
-https://github.com/junkerderprovinz/unraid-apps
+```bash
+docker run -d --name prusaslicer --shm-size=1gb \
+  -p 3001:3001 \
+  -e PUID=99 -e PGID=100 \
+  -v /path/to/appdata/prusaslicer:/config \
+  -v /path/to/models:/storage \
+  junkerderprovinz/prusaslicer:latest
 ```
 
-Then open the WebUI on the mapped **HTTPS** port (default `3001`).
-
-<br>
-
-## 5. Configuration
-
-| Variable | Required | Description |
-|---|---|---|
-| `CUSTOM_USER` | No | WebUI login user. Leave empty (with `PASSWORD`) for **no login** on a trusted LAN. |
-| `PASSWORD` | No | WebUI login password. Empty = no login; set both to enable HTTP basic auth on the WebUI. |
-| `CUSTOM_HTTPS_PORT` | No | HTTPS port the WebUI is served on (default `3001`). |
-| `PUID` / `PGID` | No | User/group the app runs as, so files it writes match your share ownership. The Unraid template sets `99`/`100` (nobody/users). |
-| `TZ` | No | Timezone (e.g. `Europe/Berlin`). |
-
-### Screen size and memory use
-
-The desktop follows your browser window: Selkies resizes the screen to the size the browser
-reports, so there is no screen size to set and memory only grows with the window you actually use.
-A 1600x1000 window on a laptop set to 200 % counts as 1600x1000. With HiDPI switched on in the
-Selkies sidebar the same window counts in physical pixels, 3200x2000.
-
-**Display scaling** follows the browser without any setting. Every browser is streamed at the size
-it reports, with the desktop at 96 DPI, so PrusaSlicer looks the same on a 100 % desktop and on a
-laptop set to 200 %. On the laptop the picture is a little softer, because the browser stretches it.
-The **HiDPI** switch in the Selkies sidebar is remembered per browser and wins over this default.
-With it on, a high-resolution display gets its physical pixels and PrusaSlicer is drawn at half
-size, so if PrusaSlicer looks tiny on a laptop, switch HiDPI off there.
+Open `https://<server-ip>:3001/` and accept the self-signed certificate once. On the first launch the Configuration Assistant asks for your printers and filaments. After that, import a model with File → Import, slice it and export the G-code into `/storage`.
 
 > [!NOTE]
-> Closing PrusaSlicer in the browser starts a fresh one instead of leaving a black screen. That is
-> the base image's watchdog, enabled here by default.
-
-Mount your models/G-code folder to **`/storage`** (the Unraid template defaults it to `/mnt/user`,
-giving access to all shares) so imports and slices land on your array. PrusaSlicer's own
-configuration (printer/filament/print profiles) persists under **`/config`**.
-
-> [!NOTE]
-> The WebUI has **no login by default** for trusted-LAN use. Never expose it directly to the
-> internet. Put it behind a VPN or a reverse proxy that adds authentication, or set
-> `CUSTOM_USER` + `PASSWORD` to enable the built-in basic auth.
+> The WebUI has no login by default, for use on a trusted network. Never expose it to the internet directly: put it behind a VPN or a reverse proxy with authentication, or set `CUSTOM_USER` and `PASSWORD` to turn on the built-in login.
 
 <br>
 
-## 6. First use
-
-1. Open the WebUI. PrusaSlicer starts maximised, ready to slice.
-2. Run the **Configuration Assistant** (first launch) and pick your printer(s) and filament(s).
-3. Import a model (`File → Import`, or drag it onto the plate from your mounted folder), slice,
-   and export the G-code to your mounted output folder.
-4. Prefer a dark UI? PrusaSlicer has its own **Dark mode** under *Preferences → General → Dark
-   mode*; the container's GTK chrome is already dark.
-
-Closing the PrusaSlicer window simply reopens a fresh instance. It is the container's single
-app (kiosk model), so there is nothing else to manage.
-
-<br>
-
-## 7. How it works
-
-```
-Browser ──WebSockets (Selkies)──> PrusaSlicer container
-                              ├─ nginx (Selkies WebUI, HTTPS :3001)
-                              ├─ openbox + Selkies desktop
-                              └─ /usr/bin/prusa-slicer  (Debian trixie package)
-                                 └─ /config  (printer/filament/print profiles, persisted)
-```
-
-Built on `ghcr.io/linuxserver/baseimage-selkies:debiantrixie`. A small s6 overlay seeds the
-openbox autostart (which launches PrusaSlicer as the session's single app), keeps the WebUI
-login-free unless you set credentials, and prints a **`PRUSASLICER IS READY`** banner to the
-container log once the WebUI is serving. Images are built natively per architecture, boot-smoke
-tested (the binary is present **and** the WebUI answers) before publishing, and scanned for CVEs.
-
-<br>
-
-## 8. Credits
-
-- **[PrusaSlicer](https://github.com/prusa3d/PrusaSlicer)** by Prusa Research (AGPL-3.0), the
-  slicer this image packages. Installed from the Debian `prusa-slicer` package. This project is
-  **not affiliated with or endorsed by Prusa Research**.
-- **[LinuxServer.io baseimage-selkies](https://github.com/linuxserver/docker-baseimage-selkies)**
-  (GPL-3.0), the Selkies web-desktop base.
-- **[Selkies](https://github.com/selkies-project/selkies)**, the desktop streaming stack.
-
-See [`NOTICE`](NOTICE) for the full bundled-software license list. This repository's own wrapper
-(Dockerfile, rootfs, scripts, artwork) is AGPL-3.0; see [`LICENSE`](LICENSE).
-
-<br>
-
-## 9. License
-
-**Copyright (C) 2026 Junker der Provinz.**
-
-This repository packages PrusaSlicer as a container for Unraid. The packaging in this repository (Dockerfile, scripts, theme, web assets and everything else original here) is free software under the **GNU Affero General Public License v3.0** (AGPL-3.0); see [LICENSE](LICENSE). If you distribute it, or run a modified version as a network service, you must release your source under the same AGPL-3.0 terms and keep the existing copyright and attribution notices intact.
-
-**Scope.** The AGPL applies to this repository's own code and assets. PrusaSlicer itself is a separate project under its own license and name; this repository does not claim it. The banner, logo, theme and other branding original to this repository remain reserved: a fork must use its own branding and may not present itself as this project.
-
-<br>
-
-## 10. How AI is used here
+## 4. How AI is used here
 
 One knight builds this, and AI is one of the tools I work with, the same way I work with an editor or a compiler. It helps me write code and documentation and it checks my work, and that saves me a good many evenings. It does not make the decisions, though. I read and understand everything before it ships, and if something here breaks, that is on me and not on the tool.
 
@@ -220,7 +121,7 @@ You do not have to take my word for it. The code is open and every release note 
 
 <br>
 
-## 11. Support this project
+## 5. Support this project
 
 Questions, bugs, ideas or feature requests? Please [open a GitHub issue](https://github.com/junkerderprovinz/prusaslicer/issues).
 
@@ -228,10 +129,16 @@ A one-knight job: I build it, keep it running, work through the issues and add w
 
 If it has earned a place on your server or computer, toss a coin to your knight: it helps cover the costs and keeps the project alive. It also makes this knight's heart beat a little faster. Three ways below, whichever suits you.
 
+<!-- give-buttons: written by scripts/gen_download_buttons.py -->
 <p align="center">
-  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/give.svg#svgView(viewBox(0,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.62"></a>
+  <a href="https://buymeacoffee.com/junkerderprovinz"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/download-buttons/buttons.svg?v=a82cc8264e34#svgView(viewBox(2598,0,841.9,245.3))" alt="Buy me a coffee" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/give.svg#svgView(viewBox(841.9,0,841.9,245.3))" alt="PayPal" width="160" height="46.62"></a>
+  <a href="https://www.paypal.com/donate/?hosted_button_id=76FVV52TKXTUS"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/download-buttons/buttons.svg?v=a82cc8264e34#svgView(viewBox(3464,0,841.9,245.3))" alt="PayPal" width="160" height="46.618"></a>
   &nbsp;
-  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/junkerderprovinz/main/donate/buttons/give.svg#svgView(viewBox(1683.8,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.62"></a>
+  <a href="https://junkerderprovinz.github.io/junkerderprovinz/"><img src="https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/.github/assets/download-buttons/buttons.svg?v=a82cc8264e34#svgView(viewBox(4330,0,841.9,245.3))" alt="Donate with crypto" width="160" height="46.618"></a>
 </p>
+<!-- /give-buttons -->
+
+<br>
+
+<sub>The packaging in this repository is AGPL-3.0. PrusaSlicer by Prusa Research is AGPL-3.0 as well, and this project is not affiliated with or endorsed by Prusa Research. Every bundled component and its licence is listed in <a href="NOTICE">NOTICE</a>.</sub>
