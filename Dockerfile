@@ -7,7 +7,7 @@
 # which carries prusa-slicer in main for amd64 and arm64 and brings its security
 # updates along.
 
-ARG BASE_TAG=debiantrixie@sha256:ea43d24cafc1aa2cd5af2296d038950205fc6140849d3678af727236e642e7ee
+ARG BASE_TAG=debiantrixie@sha256:c3f25149cf58957fcc4259904b02cf88b1e51fc8df2f9946bc64650701e527e7
 FROM ghcr.io/linuxserver/baseimage-selkies:${BASE_TAG}
 
 LABEL maintainer="junkerderprovinz"
