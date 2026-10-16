@@ -10,6 +10,8 @@ REPO = "prusaslicer"
 BUTTONS = {
     "unraid": "https://ca.unraid.net/apps/prusaslicer-0118v4d0mxjg49",
     "mos": "https://mos-official.net/apps.html?search=PrusaSlicer",
+    "zimaos": "https://github.com/junkerderprovinz/zimaos-apps#install",
+    "umbrel": "https://github.com/junkerderprovinz/umbrel-apps#install",
     "compose": "https://raw.githubusercontent.com/junkerderprovinz/prusaslicer/main/compose.yaml",
     # A release's "Source code (zip)" is the whole repository at that tag, and
     # GitHub gives the newest one no fixed address, so this leads to the release
