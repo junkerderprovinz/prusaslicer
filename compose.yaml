@@ -7,7 +7,7 @@
 
 services:
   prusaslicer:
-    image: junkerderprovinz/prusaslicer:latest
+    image: junkerderprovinz/prusaslicer:latest@sha256:209b5b000c4554d8423be2df3d262083cc457b4b408099fe996d136eb7e05631
     container_name: prusaslicer
     restart: unless-stopped
     shm_size: 1gb
