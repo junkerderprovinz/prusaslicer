@@ -194,7 +194,7 @@ jobs:
         run: |
           set -euo pipefail
           git fetch --tags --force --quiet
-          newest=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1)
+          newest=$(git tag -l | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
           echo "this tag: ${GITHUB_REF_NAME}"
           echo "newest:   ${newest}"
           if [ "$newest" = "${GITHUB_REF_NAME}" ]; then
@@ -212,6 +212,9 @@ jobs:
           images: |
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
             name=docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }},enable=${{ vars.DOCKERHUB_USERNAME != '' }}
+          # The action adds latest to every semver tag unless the flavor turns that off.
+          flavor: |
+            latest=false
           # `latest` is the newest released version; the tip of main answers to
           # `edge`. The `edge` condition is spelled out because
           # {{is_default_branch}} also reports true for a tag build, which would
