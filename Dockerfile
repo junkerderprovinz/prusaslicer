@@ -7,6 +7,7 @@
 # which carries prusa-slicer in main for amd64 and arm64 and brings its security
 # updates along.
 
+# renovate: datasource=docker depName=ghcr.io/linuxserver/baseimage-selkies
 ARG BASE_TAG=debiantrixie@sha256:8ec2ec5f81bc444643838fe3eea79f0e2ba09f6afff4b6f5b39f3e7cc05efcd1
 FROM ghcr.io/linuxserver/baseimage-selkies:${BASE_TAG}
 
