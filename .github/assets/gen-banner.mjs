@@ -5,13 +5,14 @@
  *   prusaslicer-banner-dark.svg / .png : GitHub-dark #0d1117, light name, lighter claim
  *
  * The mark (icon.svg, the two-tone Prusa "S") is left-anchored at x=165 and 300px
- * tall, the wordmark in Archivo Black sits to its right and the claim in Lato
- * below it. Text is rendered to vector paths with opentype.js so the SVG needs no
- * font. On the dark banner the mark's #363636 half is lightened so it reads on
- * #0d1117, and the white backing circle is dropped.
+ * tall, the wordmark in Archivo Black sits to its right and the claim in Bree
+ * Light below it. Text is rendered to vector paths with opentype.js so the SVG
+ * needs no font. On the dark banner the mark's #363636 half is lightened so it
+ * reads on #0d1117, and the white backing circle is dropped.
  *
- * Deps: `npm i -g @resvg/resvg-js opentype.js`. The OFL fonts are fetched to the
- * OS temp dir at runtime and are not committed. Run:
+ * Deps: `npm i -g @resvg/resvg-js opentype.js`. Archivo Black is fetched to the
+ * OS temp dir at runtime, Bree Light is read as TTF from HOUSE_FONTS (default
+ * %LOCALAPPDATA%\halleluja-fonts). Neither is committed. Run:
  *   node .github/assets/gen-banner.mjs
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
@@ -62,7 +63,9 @@ async function font(url, file) {
   return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength));
 }
 const archivo = await font("https://github.com/google/fonts/raw/main/ofl/archivoblack/ArchivoBlack-Regular.ttf", "prusa-ArchivoBlack.ttf");
-const lato = await font("https://github.com/google/fonts/raw/main/ofl/lato/Lato-Regular.ttf", "prusa-Lato-Regular.ttf");
+// The house typeface is licensed, so it is read from a local folder and never committed.
+const fonts = process.env.HOUSE_FONTS ?? join(process.env.LOCALAPPDATA ?? tmpdir(), "halleluja-fonts");
+const claimFont = opentype.parse(readFileSync(join(fonts, "bree-light.ttf")).buffer);
 
 // The mark (icon.svg): white circle + #363636 half + #ed6b21 half, viewBox 0 0 800 800.
 const iconRaw = readFileSync(join(__dir, "icon.svg"), "utf8");
@@ -87,8 +90,8 @@ if (archivo.getAdvanceWidth(NAME, nameSize) > maxNameW)
 const em = (f, s) => s / f.unitsPerEm;
 const nameAsc = archivo.ascender * em(archivo, nameSize);
 const nameDesc = -archivo.descender * em(archivo, nameSize);
-const claimAsc = lato.ascender * em(lato, claimSize);
-const claimDesc = -lato.descender * em(lato, claimSize);
+const claimAsc = claimFont.ascender * em(claimFont, claimSize);
+const claimDesc = -claimFont.descender * em(claimFont, claimSize);
 const blockH = nameAsc + nameDesc + lineGap + claimAsc + claimDesc;
 const top = (H - blockH) / 2;
 const nameBaseline = top + nameAsc;
@@ -98,7 +101,7 @@ const claimBaseline = nameBaseline + nameDesc + lineGap + claimAsc;
 const glyphD = (font, text, x, baseline, size) =>
   font.getPaths(text, x, baseline, size).map((p) => p.toPathData(2)).filter(Boolean);
 const nameD = glyphD(archivo, NAME, textX, nameBaseline, nameSize);
-const claimD = glyphD(lato, CLAIM, textX, claimBaseline, claimSize);
+const claimD = glyphD(claimFont, CLAIM, textX, claimBaseline, claimSize);
 const paths = (ds, fill) => ds.map((d) => `<path d="${d}" fill="${fill}"/>`).join("");
 
 for (const t of THEMES) {
